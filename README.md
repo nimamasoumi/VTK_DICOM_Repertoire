@@ -14,22 +14,27 @@ The focus is going to be on reading, writing, and processing DICOM data.
   
 - Step 3:
   Go to the VTK_DICOM_Repertoire source code directory:
+  
   `cd <Your_Directories>/VTK_DICOM_Repertoire`
 
 - Step 4:
   Make a build directory in the parent directory:
+  
   `mkdir ../VTK_DICOM_Repertoire-build`
 
 - Step 5:
   Configure the files using CMake and make sure there are no errors:
+  
   `cmake ../VTK_DICOM_Repertoire`
 
 - Step 6:
   Compile and build the project:
+  
   `make`
 
 - Step 7:
   Run the program:
+  
   `VTK_DICOM_Repertoire <Path_To_A_DICOM_File>`
 
 ## Remarks ##
