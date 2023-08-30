@@ -24,12 +24,18 @@ else()
     message("\n")
 endif()
 
-add_executable(VTK_DICOM_Repertoire MACOSX_BUNDLE dicomProcess.cxx )
-    target_link_libraries(VTK_DICOM_Repertoire PRIVATE ${VTK_LIBRARIES}
-)
+add_executable(dicomProcess MACOSX_BUNDLE dicomProcess.cxx )
+target_link_libraries(dicomProcess PRIVATE ${VTK_LIBRARIES})
+
+add_executable(dicomSeriesProcess MACOSX_BUNDLE dicomSeriesProcess.cxx )
+target_link_libraries(dicomSeriesProcess PRIVATE ${VTK_LIBRARIES})
+
+add_executable(dicomMultipleView MACOSX_BUNDLE dicomMultipleView.cxx)
+target_link_libraries(dicomMultipleView PRIVATE ${VTK_LIBRARIES})
+
 # vtk_module_autoinit is needed
 vtk_module_autoinit(
-    TARGETS VTK_DICOM_Repertoire
+    TARGETS dicomProcess dicomSeriesProcess dicomMultipleView
     MODULES ${VTK_LIBRARIES}
 )
 

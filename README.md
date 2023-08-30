@@ -39,7 +39,10 @@ The focus is going to be on reading, writing, and processing DICOM data.
 
 ## Remarks ##
 
-I am expanding my VTK and DICOM knowledge everyday. I create codes to showcase the concept in a comprehensible example. Following is the list of topics that I generated the exmaple codes:
+I am expanding my VTK and DICOM knowledge everyday. I create codes to showcase the concept in a comprehensible example. Following is the list of topics that I generated the exmaple codes using VTK:
 
-1. Read the DICOM files using VTK
-2. Graphically show the DICOM files using VTK
+1. Read the DICOM files
+2. Graphically show the DICOM files
+3. Import a DICOM directory with several image slices
+4. Show different slices, zoom, and pan the images
+5. Display multiple viewports 
