@@ -33,9 +33,9 @@ The focus is going to be on reading, writing, and processing DICOM data.
   `make`
 
 - Step 7:
-  Run the program:
+  Run one of the executables, for instance:
   
-  `VTK_DICOM_Repertoire <Path_To_A_DICOM_File>`
+  `dicomSeriesProcess <Path_To_A_DICOM_Directory>`
 
 ## Remarks ##
 
