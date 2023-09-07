@@ -5,9 +5,11 @@ project(VTK_DICOM_Repertoire)
 find_package(VTK COMPONENTS
     CommonColor
     CommonCore
+    CommonDataModel
     IOImage
     InteractionImage
     InteractionStyle
+    InteractionWidgets
     RenderingContextOpenGL2
     RenderingCore
     RenderingFreeType
@@ -33,9 +35,12 @@ target_link_libraries(dicomSeriesProcess PRIVATE ${VTK_LIBRARIES})
 add_executable(dicomMultipleView MACOSX_BUNDLE dicomMultipleView.cxx)
 target_link_libraries(dicomMultipleView PRIVATE ${VTK_LIBRARIES})
 
+add_executable(dicomMultiplePlanes MACOSX_BUNDLE dicomMultiplePlanes.cxx)
+target_link_libraries(dicomMultiplePlanes PRIVATE ${VTK_LIBRARIES})
+
 # vtk_module_autoinit is needed
 vtk_module_autoinit(
-    TARGETS dicomProcess dicomSeriesProcess dicomMultipleView
+    TARGETS dicomProcess dicomSeriesProcess dicomMultipleView dicomMultiplePlanes
     MODULES ${VTK_LIBRARIES}
 )
 

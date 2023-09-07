@@ -1,6 +1,6 @@
 # VTK DICOM Repertoire using C++
 Programming conceptual C++ codes using VTK libraries for lernears and enthusiasts. 
-The focus is going to be on reading, writing, and processing DICOM data. 
+The focus is on reading, writing, and processing DICOM data. 
 
 ![alt-text](https://github.com/nimamasoumi/VTK_DICOM_Repertoire/blob/main/dcm.png?raw=true)
 
@@ -46,3 +46,5 @@ I am expanding my VTK and DICOM knowledge everyday. I create codes to showcase t
 3. Import a DICOM directory with several image slices
 4. Show different slices, zoom, and pan the images
 5. Display multiple viewports 
+6. Show an interative border widget superimposed on images
+7. Show 2D slices of 3D image from axial, coronal, and sagittal views
