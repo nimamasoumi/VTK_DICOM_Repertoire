@@ -136,20 +136,20 @@ vtkStandardNewMacro(myVtkInteractorStyleImage);
 //     _intRW->Start();
 // }
 
-void changePos(vtkNew<vtkBorderRepresentation>& roiRep, double& _p1)
-{
-    bool flag = true;
-    while(flag)
-    {
-        if(roiRep->GetPosition()[0]!=_p1)
-        {
-            roiRep->SetPosition(_p1,0.01);
-            roiRep->Modified();
-        }
-    }    
-}
+// void changePos(vtkNew<vtkBorderRepresentation>& roiRep, double& _p1)
+// {
+//     bool flag = true;
+//     while(flag)
+//     {
+//         if(roiRep->GetPosition()[0]!=_p1)
+//         {
+//             roiRep->SetPosition(_p1,0.01);
+//             roiRep->Modified();
+//         }
+//     }    
+// }
 
-void createSlicer(const std::string _fileName, const int _orient, double& _p1)
+void createSlicer(const std::string _fileName, const int _orient)
 {
     vtkNew<vtkNamedColors> colors;
     // Read all the DICOM files in the specified directory.
@@ -242,22 +242,29 @@ void createSlicer(const std::string _fileName, const int _orient, double& _p1)
     //imageViewer->GetRenderer()->GetActiveCamera()->SetViewUp(1.0,0.0,0.0);
     vtkNew<vtkBorderWidget> roiBox;
     vtkNew<vtkBorderRepresentation> roiRep;
-    roiRep->SetPosition(_p1,0.01);
+    roiRep->SetPosition(0.6,0.01);
     roiRep->SetPosition2(0.6,0.85);
     roiRep->Modified();
     roiBox->SetInteractor(renderWindowInteractor);
     roiBox->SetRepresentation(roiRep);
     roiBox->EnabledOn();
     
+    double* ssX = imageViewer->GetImageActor()->GetXRange();
+    double* ssY = imageViewer->GetImageActor()->GetYRange();
+    double* ssZ = imageViewer->GetImageActor()->GetZRange();
+
     imageViewer->GetRenderer()->ResetCamera();  
     imageViewer->GetRenderer()->SetBackground(
-        colors->GetColor3d("SlateGray").GetData());
-    imageViewer->GetRenderWindow()->SetSize(1200, 800);
+        colors->GetColor3d("SlateGray").GetData());    
     imageViewer->GetRenderWindow()->SetPosition(2200, 100);
+    
+    //std::cout<<ss[0]<<" and "<<ss[1]<<"\n"<<std::endl;
+
     switch (_orient)
     {
         case 0:
         imageViewer->GetRenderWindow()->SetWindowName("Axial View");
+        imageViewer->GetRenderWindow()->SetSize((int)ssX[1], (int)ssY[1]);
         break;
 
         case 1:
@@ -273,7 +280,7 @@ void createSlicer(const std::string _fileName, const int _orient, double& _p1)
     }       
     imageViewer->Render();
 
-    std::thread t4(changePos, std::ref(roiRep), std::ref(_p1));    
+    //std::thread t4(changePos, std::ref(roiRep), std::ref(_p1));    
 
     renderWindowInteractor->Start();
 }
@@ -290,17 +297,14 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  std::string folder = argv[1];
-  // std::string folder = "C:\\VTK\\vtkdata-5.8.0\\Data\\DicomTestImages";
-
-  double p1 = 0.1, p2=0.2;
+  std::string folder = argv[1];  
 
   try{
-    std::thread t1(createSlicer, folder, 0, std::ref(p1));  
+    std::thread t1(createSlicer, folder, 0);  
     // Second Window in XZ orientation
-    std::thread t2(createSlicer, folder, 1, std::ref(p1));  
+    std::thread t2(createSlicer, folder, 1);  
     // Third Window in YZ orientation
-    std::thread t3(createSlicer, folder, 2, std::ref(p1));  
+    std::thread t3(createSlicer, folder, 2);  
     t1.join();
     t2.join();
     t3.join();
