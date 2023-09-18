@@ -18,6 +18,10 @@
 #include <sstream>
 #include <thread>
 #include <exception>
+#include <future>
+#include <stdexcept>
+#include <mutex>
+#include <chrono>
 
 namespace {
 
@@ -257,27 +261,52 @@ void createSlicer(const std::string _fileName, const int _orient)
     imageViewer->GetRenderer()->SetBackground(
         colors->GetColor3d("SlateGray").GetData());    
     imageViewer->GetRenderWindow()->SetPosition(2200, 100);
-    
-    //std::cout<<ss[0]<<" and "<<ss[1]<<"\n"<<std::endl;
+    auto camera = imageViewer->GetRenderer()->GetActiveCamera();
 
+    std::mutex imageViewer_mutex;    
+    
+    imageViewer_mutex.lock();        
     switch (_orient)
     {
         case 0:
         imageViewer->GetRenderWindow()->SetWindowName("Axial View");
-        imageViewer->GetRenderWindow()->SetSize((int)ssX[1], (int)ssY[1]);
+        imageViewer->GetRenderWindow()->SetSize((int)ssX[1], (int)ssY[1]);        
+        //camera->ParallelProjectionOn();
+        //camera->SetParallelScale(imageViewer->GetRenderWindow()->GetSize()[0]*0.3);
+
+        std::cout<<"Image ranges in axial view:\n"<<std::endl;
+        std::cout<<ssX[0]<<" and "<<ssX[1]<<"\n"<<std::endl;
+        std::cout<<ssY[0]<<" and "<<ssY[1]<<"\n"<<std::endl;
+        std::cout<<ssZ[0]<<" and "<<ssZ[1]<<"\n"<<std::endl;
+
         break;
 
         case 1:
         imageViewer->GetRenderWindow()->SetWindowName("Coronal View");
+
+        std::cout<<"Image ranges in coronal view:\n"<<std::endl;
+        std::cout<<ssX[0]<<" and "<<ssX[1]<<"\n"<<std::endl;
+        std::cout<<ssY[0]<<" and "<<ssY[1]<<"\n"<<std::endl;
+        std::cout<<ssZ[0]<<" and "<<ssZ[1]<<"\n"<<std::endl;
+
         break;
 
         case 2:
         imageViewer->GetRenderWindow()->SetWindowName("Sagittal View");
+
+        std::cout<<"Image ranges in sagittal view:\n"<<std::endl;
+        std::cout<<ssX[0]<<" and "<<ssX[1]<<"\n"<<std::endl;
+        std::cout<<ssY[0]<<" and "<<ssY[1]<<"\n"<<std::endl;
+        std::cout<<ssZ[0]<<" and "<<ssZ[1]<<"\n"<<std::endl;
+
         break;
 
         default:
         break;
     }       
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    imageViewer_mutex.unlock();    
+
     imageViewer->Render();
 
     //std::thread t4(changePos, std::ref(roiRep), std::ref(_p1));    
@@ -308,10 +337,12 @@ int main(int argc, char* argv[])
     t1.join();
     t2.join();
     t3.join();
-  }catch(std::exception& e)
+    return EXIT_SUCCESS;
+    
+    //throw std::invalid_argument("Runtime exception in running the threads.");
+  }catch(const std::exception& e)
   {
     std::cout<< e.what() << std::endl;
   }
 //   std::cout<<"Testing if the code comes here.\n\n"<<std::endl;
-  return EXIT_SUCCESS;
 }
