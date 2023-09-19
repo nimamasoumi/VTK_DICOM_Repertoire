@@ -38,9 +38,12 @@ target_link_libraries(dicomMultipleView PRIVATE ${VTK_LIBRARIES})
 add_executable(dicomMultiplePlanes MACOSX_BUNDLE dicomMultiplePlanes.cxx)
 target_link_libraries(dicomMultiplePlanes PRIVATE ${VTK_LIBRARIES})
 
+add_executable(vtkObserverImpl MACOSX_BUNDLE Concepts/vtkObserverImpl.cxx)
+target_link_libraries(vtkObserverImpl PRIVATE ${VTK_LIBRARIES})
+
 # vtk_module_autoinit is needed
 vtk_module_autoinit(
-    TARGETS dicomProcess dicomSeriesProcess dicomMultipleView dicomMultiplePlanes
+    TARGETS dicomProcess dicomSeriesProcess dicomMultipleView dicomMultiplePlanes vtkObserverImpl
     MODULES ${VTK_LIBRARIES}
 )
 

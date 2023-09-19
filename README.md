@@ -48,3 +48,4 @@ I am expanding my VTK and DICOM knowledge everyday. I create codes to showcase t
 5. Display multiple viewports 
 6. Show an interative border widget superimposed on images
 7. Show 2D slices of 3D image from axial, coronal, and sagittal views
+8. Create a custom observer callback using VTK implementation of observer/command design pattern
