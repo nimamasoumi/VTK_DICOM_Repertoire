@@ -22,10 +22,120 @@
 #include <stdexcept>
 #include <mutex>
 #include <chrono>
+#include <vector>
 
 namespace {
 
 // Helper class to format slice status message.
+class manageBorderPos : public vtkObject
+{
+  double* pos_a, *pos_c, *pos_s;
+  double* pos2_a, *pos2_c, *pos2_s;
+
+  public:
+  void setPos(double* _pos, const int _pid)
+  {
+    switch(_pid)
+    {
+      case 0:
+        pos_a=_pos;
+        break;
+
+      case 1:
+        pos_c=_pos;
+        break;
+
+      case 2:
+        pos_s=_pos;
+        break;
+
+      default:
+        break;
+    }
+    InvokeEvent(33);
+  }
+  void setPos2(double* _pos, const int _pid)
+  {
+    switch(_pid)
+    {
+      case 0:
+        pos2_a=_pos;
+        break;
+
+      case 1:
+        pos2_c=_pos;
+        break;
+
+      case 2:
+        pos2_s=_pos;
+        break;
+
+      default:
+        break;
+    }
+  }
+  double* getPos(const int _pid)
+  {
+    switch(_pid)
+    {
+      case 0:
+        return pos_a;        
+
+      case 1:
+        return pos_c;        
+
+      case 2:
+        return pos_s;
+        break;
+
+      default:
+        return nullptr;
+    }
+  }
+  double* getPos2(const int _pid)
+  {
+    switch(_pid)
+    {
+      case 0:
+        return pos2_a;        
+
+      case 1:
+        return pos2_c;        
+
+      case 2:
+        return pos2_s;
+        break;
+
+      default:
+        return nullptr;
+    }
+  }
+};
+
+class borderObserverCommand : public vtkCommand
+{
+  public:
+  void Execute(vtkObject* caller, unsigned long eid, void* callData)
+  {
+    std::cout<<"This is the Observer's callback!"<<std::endl;
+    std::cout<<"The invoker object name is: "<<caller->GetClassName()<<std::endl;
+    std::cout<<"The event ID is: "<<eid<<std::endl;
+    std::cout<<"The event enumerator is: "<<this->GetStringFromEventId(eid)<<"\n"<<std::endl;
+
+    std::string roiRep = "vtkBorderRepresentation";
+    if ((eid==33)&&(!roiRep.compare(caller->GetClassName())))
+    {
+        // auto roiRep = dynamic_cast<vtkBorderRepresentation*>(caller);
+        // double* roipos = roiRep->GetPosition(); 
+        // double* roipos2 = roiRep->GetPosition2(); 
+        // std::cout<<"The ROI positions are: "<<roipos[0]<<" and "<<roipos[1]<<"\n"<<std::endl;
+        // std::cout<<"The ROI positions2 are: "<<roipos2[0]<<" and "<<roipos2[1]<<"\n"<<std::endl;
+        // roiRep->SetPosition(roipos[0],roipos[0]);
+        // roiRep->SetPosition2(roipos2[0],roipos2[0]);
+    }
+  }
+};
+
 class StatusMessage
 {
 public:
@@ -153,7 +263,7 @@ vtkStandardNewMacro(myVtkInteractorStyleImage);
 //     }    
 // }
 
-void createSlicer(const std::string _fileName, const int _orient)
+void createSlicer(vtkObject* _posData, const std::string _fileName, const int _orient)
 {
     vtkNew<vtkNamedColors> colors;
     // Read all the DICOM files in the specified directory.
@@ -328,12 +438,17 @@ int main(int argc, char* argv[])
 
   std::string folder = argv[1];  
 
+  auto posData = new manageBorderPos();
+
+  auto widgetC = new borderObserverCommand();
+  posData->AddObserver(widgetC->ModifiedEvent, widgetC);
+
   try{
-    std::thread t1(createSlicer, folder, 0);  
+    std::thread t1(createSlicer, posData, folder, 0);  
     // Second Window in XZ orientation
-    std::thread t2(createSlicer, folder, 1);  
+    std::thread t2(createSlicer, posData, folder, 1);  
     // Third Window in YZ orientation
-    std::thread t3(createSlicer, folder, 2);  
+    std::thread t3(createSlicer, posData, folder, 2);  
     t1.join();
     t2.join();
     t3.join();
