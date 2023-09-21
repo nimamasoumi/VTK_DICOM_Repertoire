@@ -17,7 +17,22 @@ class myCommand : public vtkCommand
     public: 
     void Execute(vtkObject* caller, unsigned long eid, void* callData)
     {
-        std::cout<<"This is the Observer's callback!\n"<<std::endl;
+        std::cout<<"This is the Observer's callback!"<<std::endl;
+        std::cout<<"The invoker object name is: "<<caller->GetClassName()<<std::endl;
+        std::cout<<"The event ID is: "<<eid<<std::endl;
+        std::cout<<"The event enumerator is: "<<this->GetStringFromEventId(eid)<<"\n"<<std::endl;
+
+        std::string roiRep = "vtkBorderRepresentation";
+        if ((eid==33)&&(!roiRep.compare(caller->GetClassName())))
+        {
+            auto roiRep = dynamic_cast<vtkBorderRepresentation*>(caller);
+            double* roipos = roiRep->GetPosition(); 
+            double* roipos2 = roiRep->GetPosition2(); 
+            std::cout<<"The ROI positions are: "<<roipos[0]<<" and "<<roipos[1]<<"\n"<<std::endl;
+            std::cout<<"The ROI positions2 are: "<<roipos2[0]<<" and "<<roipos2[1]<<"\n"<<std::endl;
+            roiRep->SetPosition(roipos[0],roipos[0]);
+            roiRep->SetPosition2(roipos2[0],roipos2[0]);
+        }
     }
 };
 }
@@ -57,7 +72,10 @@ int main (int argc, char* argv[])
     imageViewer->GetRenderWindow()->AddObserver(myC->WindowResizeEvent,myC);
 
     auto widgetC = new myCommand();
-    roiBox->AddObserver(widgetC->UpdateEvent, widgetC);
+    roiBox->AddObserver(widgetC->AnyEvent, widgetC);
+
+    auto widgetC2 = new myCommand();
+    roiRep->AddObserver(widgetC2->AnyEvent, widgetC2);
 
     interactor->Start();
 
